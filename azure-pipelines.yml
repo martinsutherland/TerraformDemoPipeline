@@ -28,6 +28,7 @@ stages:
         - task: TerraformCLI@1
           inputs:
             command: 'init'
+            workingDirectory: '$(Build.SourcesDirectory)/infra'
             allowTelemetryCollection: true
 
 - stage: TerraformApply
