@@ -18,7 +18,7 @@ variables:
 stages:
 
 - stage: Terraform Install
-  displayName: Build stage
+  displayName: Terraform Install
   jobs:
     - job: TerraformInstall
       displayName: TerraformInstall
