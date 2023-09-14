@@ -30,12 +30,7 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - task: UseAzureCLI@2
-        displayName: 'Install Azure CLI'
-        inputs:
-          azureSubscription: '$(azureSubscription)'
-          inlineScript: |
-            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
 
       - script: |
           # Authenticate to Azure using the Azure CLI
@@ -70,11 +65,4 @@ jobs:
           echo "##vso[task.setvariable variable=MyVariable;isOutput=true]$(value)"
         displayName: 'Publish Terraform Output'
 
-      - task: AzureCLI@2
-        displayName: 'Create Azure Container Registry'
-        inputs:
-          azureSubscription: '$(azureSubscription)'
-          scriptType: 'bash'
-          scriptLocation: 'inlineScript'
-          inlineScript: |
-            az acr create --resource-group rg-terraform-example --name terraformcontainerexample --sku Standard --location uksouth --admin-enabled true
+
