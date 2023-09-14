@@ -17,7 +17,7 @@ variables:
 
 stages:
 
-- stage: Terraform Install
+- stage: TerraformInstall
   displayName: TerraformInstall
   jobs:
     - job: TerraformInstall
@@ -28,7 +28,7 @@ stages:
             terraformVersion: 'latest'
             downloadUrl: 'https://releases.hashicorp.com/terraform'
 
-- stage: Terraform Run
+- stage: TerraformRun
   displayName: TerraformRun
   jobs:
     - job: TerraformRun
@@ -39,7 +39,7 @@ stages:
             command: 'init'
             allowTelemetryCollection: true
 
-- stage: Terraform Apply
+- stage: TerraformApply
   displayName: TerraformApply
   jobs:
     - job: TerraformApply
