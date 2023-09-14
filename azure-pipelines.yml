@@ -27,6 +27,19 @@ variables:
 
 
 stages:
+  - stage: Authentication
+    displayName: Azure Auth
+    jobs:
+      - job: AzureAuth
+        displayName: Logging into Azure
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - script: |
+              echo "$(username)"
+ 
+
+    
 
   - stage: TerraformProvision
     displayName: Terraform Provisioning stage
@@ -48,12 +61,10 @@ stages:
 
           - script: |
               # Initialize Terraform and apply your configuration
-              echo "$(username)"
               cd $(Build.SourcesDirectory)/infra
               terraform init
               terraform plan
               terraform apply
-              echo "$(username)"
             displayName: 'Terraform Init and Apply'
 
   # - stage: Build
