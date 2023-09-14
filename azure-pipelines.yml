@@ -38,30 +38,4 @@ jobs:
             az --version
             az account show
 
-      - script: |
-          # Set the Azure subscription for Terraform
-          az account set --subscription "$(azureSubscription)"
-        displayName: 'Set Azure Subscription'
 
-      - script: |
-          # Initialize Terraform
-          cd $(Build.SourcesDirectory)/infra
-          terraform init
-        displayName: 'Initialize Terraform'
-
-      - script: |
-          # Create or update the resource group
-          cd $(Build.SourcesDirectory)/infra
-          terraform apply -auto-approve
-        displayName: 'Apply Terraform Configuration'
-
-      - script: |
-          # Get the output values from Terraform (if needed)
-          cd $(Build.SourcesDirectory)/infra
-          terraform output
-        displayName: 'Terraform Output'
-
-      - script: |
-          # Publish the output values as pipeline variables (if needed)
-          echo "##vso[task.setvariable variable=MyVariable;isOutput=true]$(value)"
-        displayName: 'Publish Terraform Output'
