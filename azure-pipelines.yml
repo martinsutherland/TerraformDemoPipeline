@@ -48,7 +48,7 @@ stages:
 
           - script: |
               # Initialize Terraform and apply your configuration
-              az login -u $(username) -p $(password) 
+              az login --username $(username) --password $(password) 
               cd $(Build.SourcesDirectory)/infra
               terraform init
               terraform apply -auto-approve

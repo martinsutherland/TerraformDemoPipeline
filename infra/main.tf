@@ -2,6 +2,15 @@ provider "azurerm" {
     features {}
 }
 
+variable "username" {
+  type        = string
+  description = "username"
+}
+variable "password" {
+  type        = string
+  description = "password"
+}
+
 # Create a resource group
 resource "azurerm_resource_group" "resource_group" {
   name = "rg-terraform-2023"
