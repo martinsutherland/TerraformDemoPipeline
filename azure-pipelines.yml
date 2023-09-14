@@ -1,8 +1,7 @@
 trigger:
   - main
 
-resources:
-  - repo: self
+
 
 variables:
   - group: Authentication
@@ -25,65 +24,57 @@ variables:
   - name: uiSource
     value: "/src"
 
+jobs:
+  - job: TerraformDeploy
+    displayName: 'Terraform Deployment'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UseAzureCLI@2
+        displayName: 'Install Azure CLI'
+        inputs:
+          azureSubscription: '$(azureSubscription)'
+          inlineScript: |
+            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-stages:
+      - script: |
+          # Authenticate to Azure using the Azure CLI
+          az acr login --name $(containerName) --username $(username) --password $(password)
+        displayName: 'Azure Login'
 
- 
+      - script: |
+          # Set the Azure subscription for Terraform
+          az account set --subscription "$(azureSubscription)"
+        displayName: 'Set Azure Subscription'
 
-    
+      - script: |
+          # Initialize Terraform
+          cd $(Build.SourcesDirectory)/infra
+          terraform init
+        displayName: 'Initialize Terraform'
 
-  - stage: TerraformProvision
-    displayName: Terraform Provisioning stage
-    jobs:
-      - job: TerraformProvision
-        displayName: Provision Infrastructure with Terraform
-        pool:
-          vmImage: $(vmImageName)
-        steps:
-          - script: |
-              # Install Terraform (if not already installed)
-              if ! command -v terraform &> /dev/null; then
-                  curl -o terraform.zip https://releases.hashicorp.com/terraform/0.15.0/terraform_0.15.0_linux_amd64.zip
-                  unzip terraform.zip
-                  chmod +x terraform
-                  sudo mv terraform /usr/local/bin/
-              fi
-            displayName: 'Install Terraform'
+      - script: |
+          # Create or update the resource group
+          cd $(Build.SourcesDirectory)/infra
+          terraform apply -auto-approve
+        displayName: 'Apply Terraform Configuration'
 
-          - script: |
-              # Initialize Terraform and apply your configuration
-              cd $(Build.SourcesDirectory)/infra
-              terraform init
-              terraform apply -auto-approve
-            displayName: 'Terraform Init and Apply'
+      - script: |
+          # Get the output values from Terraform (if needed)
+          cd $(Build.SourcesDirectory)/infra
+          terraform output
+        displayName: 'Terraform Output'
 
-  # - stage: Build
-  #   displayName: Build stage
-  #   jobs:
-  #     - job: Build
-  #       displayName: Build
-  #       pool:
-  #         vmImage: $(vmImageName)
-  #       steps:
-  #         - task: Docker@2
-  #           displayName: Push stage
-  #           inputs:
-  #             command: buildAndPush
-  #             repository: $(imageRepository)
-  #             dockerfile: $(dockerfilePath)
-  #             containerRegistry: $(dockerRegistryServiceConnection)
-  #             tags: |
-  #               $(tag)
+      - script: |
+          # Publish the output values as pipeline variables (if needed)
+          echo "##vso[task.setvariable variable=MyVariable;isOutput=true]$(value)"
+        displayName: 'Publish Terraform Output'
 
-  # - stage: Deploy
-  #   displayName: Deploy
-  #   jobs:
-  #     - job: Deploy
-  #       displayName: Deploy
-  #       steps:
-  #         - task: AzureWebAppContainer@1
-  #           displayName: "Deploy stage"
-  #           inputs:
-  #             azureSubscription: $(azureSubscription)
-  #             appName: $(appName)
-  #             imageName: $(containerRegistry)/$(imageRepository):$(tag)
+      - task: AzureCLI@2
+        displayName: 'Create Azure Container Registry'
+        inputs:
+          azureSubscription: '$(azureSubscription)'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az acr create --resource-group rg-terraform-example --name terraformcontainerexample --sku Standard --location uksouth --admin-enabled true
