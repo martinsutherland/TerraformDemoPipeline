@@ -27,16 +27,7 @@ variables:
 
 
 stages:
-  - stage: Authentication
-    displayName: Azure Auth
-    jobs:
-      - job: AzureAuth
-        displayName: Logging into Azure
-        pool:
-          vmImage: $(vmImageName)
-        steps:
-          - script: |
-              az login -u $(username) -p $(password)
+
  
 
     
@@ -63,8 +54,7 @@ stages:
               # Initialize Terraform and apply your configuration
               cd $(Build.SourcesDirectory)/infra
               terraform init
-              terraform plan
-              terraform apply
+              terraform apply -auto-approve
             displayName: 'Terraform Init and Apply'
 
   # - stage: Build
