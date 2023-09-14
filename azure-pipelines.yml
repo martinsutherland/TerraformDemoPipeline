@@ -32,7 +32,7 @@ jobs:
         displayName: AzureCLI
         inputs:
           azureSubscription: $(azureSubscription)
-
+          scriptType: 'ps'
       - script: |
           az --version
           az account show
