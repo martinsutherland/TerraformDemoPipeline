@@ -34,7 +34,7 @@ jobs:
 
       - script: |
           # Authenticate to Azure using the Azure CLI
-          az acr login --name $(containerName) --username $(username) --password $(password)
+          az acr login --username $(username) --password $(password)
         displayName: 'Azure Login'
 
       - script: |
