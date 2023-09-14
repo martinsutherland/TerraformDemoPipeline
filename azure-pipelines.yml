@@ -31,7 +31,7 @@ jobs:
       - task: AzureCLI@2
         displayName: AzureCLI
         inputs:
-          azureSubscription: '<Name of the Azure Resource Manager service connection>'
+          azureSubscription: $(azureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
           inlineScript: |
