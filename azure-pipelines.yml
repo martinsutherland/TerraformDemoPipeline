@@ -17,16 +17,7 @@ variables:
 
 stages:
 
-- stage: TerraformInstall
-  displayName: TerraformInstall
-  jobs:
-    - job: TerraformInstall
-      displayName: TerraformInstall
-      steps:
-        - task: TerraformInstaller@1
-          inputs:
-            terraformVersion: 'latest'
-            downloadUrl: 'https://releases.hashicorp.com/terraform'
+
 
 - stage: TerraformRun
   displayName: TerraformRun
