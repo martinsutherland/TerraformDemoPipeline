@@ -40,6 +40,7 @@ stages:
         - task: TerraformCLI@1
           inputs:
             command: 'apply'
+            workingDirectory: '$(Build.SourcesDirectory)/infra'
             runAzLogin: true
             allowTelemetryCollection: true
 
