@@ -14,6 +14,7 @@ variables:
   azureSubscription: "Azure subscription 1 (12d4a125-7d4d-45ad-8101-2ba4e5ce1593)"
   vmImageName: "ubuntu-latest"
   uiSource: "/src"
+  azureServiceConnection: "AzureResourceManagerServiceConnection"
 
 stages:
 
@@ -25,6 +26,9 @@ stages:
         pool:
           vmImage: $(vmImageName)
         steps:
+          - task: UseAzureServiceConnection@1
+            inputs:
+              serviceConnection: $(azureServiceConnection)
           - script: |
               # Install Terraform (if not already installed)
               if ! command -v terraform &> /dev/null; then
